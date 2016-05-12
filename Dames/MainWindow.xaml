@@ -5,10 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dames"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="500" Width="600" SizeChanged="Window_SizeChanged">
     <DockPanel>
-        <Grid>
+        <Grid x:Name="GridDames">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="500"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             
+            <local:UserControlDames Grid.Column="1" DataContext="{Binding Path=Damier}"/>
         </Grid>
     </DockPanel>
 </Window>

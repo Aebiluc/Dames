@@ -23,7 +23,14 @@ namespace Dames
         public MainWindow()
         {
             InitializeComponent();
-            
+            Damier = new Damier();
+        }
+
+        public Damier Damier { get; set; }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            GridDames.ColumnDefinitions[1].Width = new GridLength(this.Height);
         }
     }
 }
