@@ -22,8 +22,12 @@ namespace Dames
     {
         public MainWindow()
         {
-            InitializeComponent();
             Damier = new Damier();
+            InitializeComponent();
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                UserControlDamesVisuel.Damier = Damier;
+            }), null);
         }
 
         public Damier Damier { get; set; }
@@ -31,6 +35,11 @@ namespace Dames
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             GridDames.ColumnDefinitions[1].Width = new GridLength(this.Height);
+        }
+
+        private void ButtonInit_Click(object sender, RoutedEventArgs e)
+        {
+            UserControlDamesVisuel.Init();
         }
     }
 }

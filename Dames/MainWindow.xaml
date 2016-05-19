@@ -11,10 +11,10 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="500"/>
-                <ColumnDefinition Width="*"/>
+                <!--<ColumnDefinition Width="*"/>-->
             </Grid.ColumnDefinitions>
-            
-            <local:UserControlDames Grid.Column="1" DataContext="{Binding Path=Damier}"/>
+            <Button x:Name="ButtonInit" Content="Init Pièces" Height="30" VerticalAlignment="Top" Click="ButtonInit_Click"/>
+            <local:UserControlDames x:Name="UserControlDamesVisuel" Grid.Column="1" DataContext="{Binding Path=Damier}"/>
         </Grid>
     </DockPanel>
 </Window>
