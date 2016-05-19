@@ -4,6 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/* Convention */
+//  - Les pieces noirs sont en haut
+//  - La première case (haut gauche) est blanche
+//  - Les lignes/colonnes vont de haut en bas et de gauche à droite. Origine 0;0 en haut a gauche
+//  - Les pièces sont sur les cases noirs
+
+
 namespace Dames
 {
     public enum couleur { NOIR, BLANC }
@@ -43,6 +50,24 @@ namespace Dames
 
                     if(col < 9)
                         debut = debut == couleur.NOIR ? couleur.BLANC : couleur.NOIR;
+                }
+        }
+
+        public void InitPiece()
+        {
+            for (int ligne = 0; ligne < 3; ligne++)
+                for (int col = 0; col < 10; col++)
+                {
+                    Case c = getCase(ligne, col);
+                    if(c.Couleur == couleur.NOIR)
+                        c.MettrePiece(new Pion(couleur.NOIR));
+                }
+            for (int ligne = 7; ligne < 10; ligne++)
+                for (int col = 0; col < 10; col++)
+                {
+                    Case c = getCase(ligne, col);
+                    if (c.Couleur == couleur.NOIR)
+                        c.MettrePiece(new Pion(couleur.BLANC));
                 }
         }
 
@@ -101,7 +126,7 @@ namespace Dames
                     throw new DameException("Déplacement impossible");
         }
 
-        public Case getCase(int col, int ligne)
+        public Case getCase(int ligne, int col)
         {
             if (col <= 9 && col >= 0 && ligne <= 9 && ligne >= 0)
                 return _cases[ligne, col];
