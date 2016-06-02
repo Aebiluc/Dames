@@ -104,6 +104,8 @@ namespace Dames
             else
                 BougerPion(source, cible);
 
+            cible.MettrePiece(source.Piece);
+            source.EnleverPiece();
 
             if (cible.Piece.Couleur == couleur.NOIR && cible.Ligne == 9 && cible.Piece is Pion ||
                 cible.Piece.Couleur == couleur.BLANC && cible.Ligne == 0 && cible.Piece is Pion )
@@ -112,40 +114,39 @@ namespace Dames
 
         private void BougerDame(Case source, Case cible)
         {
-
+            int Lines = Math.Abs(source.Ligne - cible.Ligne);
+            for (int i = 1; i < Lines; i++)
+            {
+                Case c = getCase(i*(cible.Ligne - source.Ligne) / Lines + source.Ligne, i*(cible.Colonne - source.Colonne) / Lines + source.Colonne);
+                if(c.Ocuppe && (c.Piece.Couleur == source.Piece.Couleur || Math.Abs(Lines)-i != 1))
+                    throw new DameException("Déplacement impossible");
+                else if (c.Ocuppe && c.Piece.Couleur != source.Piece.Couleur && Math.Abs(Lines) - i == 1)
+                    c.EnleverPiece();
+            }
         }
 
         private void BougerPion(Case source, Case cible)
         {
             //Savoir si le pion descend ou monte en fonction de la couleur
-            if (source.Piece.Couleur == couleur.BLANC)
+            if (source.Piece.Couleur == couleur.NOIR && source.Piece is Pion)
                 if (source.Ligne - cible.Ligne >= 0)
                     throw new DameException("Déplacement impossible");
 
-            if (source.Piece.Couleur == couleur.NOIR)
+            if (source.Piece.Couleur == couleur.BLANC && source.Piece is Pion)
                 if (cible.Ligne - source.Ligne >= 0)
                     throw new DameException("Déplacement impossible");
-
-            //Mouvement de 1 max
-            if (Math.Abs(cible.Ligne - source.Ligne) == 1)
-            {
-                cible.MettrePiece(source.Piece);
-                source.EnleverPiece();
+            if (Math.Abs(source.Ligne - cible.Ligne) == 1 && source.Piece is Pion)
                 return;
-            }
-            else if (Math.Abs(cible.Ligne - source.Ligne) == 2)
+            else if (Math.Abs(source.Ligne - cible.Ligne) == 2 && source.Piece is Pion)
             {
-                var x = cible.Ligne - source.Ligne > 0 ? 1 :  -1;
-                var y = cible.Colonne - source.Colonne > 0 ? 1 : -1;
-                cible.MettrePiece(source.Piece);
-                Case interm = _cases[source.Ligne + x, source.Colonne + y];
-
-                if (interm.Piece.Couleur == source.Piece.Couleur)
-                    throw new DameException("Déplacement impossible");
-
-                interm.EnleverPiece();
-                source.EnleverPiece();
-                return;
+                Case c = getCase((cible.Ligne - source.Ligne) / 2 + source.Ligne, (cible.Colonne - source.Colonne) / 2 + source.Colonne);
+                if (c.Ocuppe)
+                    if(c.Piece.Couleur != source.Piece.Couleur)
+                    {
+                        c.EnleverPiece();
+                        return;
+                    }
+                throw new DameException("Déplacement impossible");
             }
             else
                 throw new DameException("Déplacement impossible");

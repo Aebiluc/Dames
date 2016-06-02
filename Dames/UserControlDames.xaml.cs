@@ -21,6 +21,7 @@ namespace Dames
     public partial class UserControlDames : UserControl
     {
         public Damier Damier { get; set; }
+        public Case SelectCase { get; set; }
 
         public UserControlDames()
         {
@@ -43,59 +44,118 @@ namespace Dames
                     Grid.SetRow(r, i);
                     Grid.SetColumn(r, j);
                     Panel.SetZIndex(r, 1);
-                    r.MouseLeftButtonDown += R_MouseLeftButtonDown;
+                    r.MouseLeftButtonDown += R_MouseLeftButtonDownRectangle;
 
                     Case c;
                     c = Damier.getCase(i, j);
                     if (c.Ocuppe)
                     {
-                        Pion pce = c.Piece as Pion;
                         Ellipse l = new Ellipse();
                         l.Width = 30;
                         l.Height = 30;
                         l.VerticalAlignment = VerticalAlignment.Center;
                         l.HorizontalAlignment = HorizontalAlignment.Center;
-                        l.Fill = pce.Couleur == couleur.BLANC ? Brushes.Gold : Brushes.Black;
+                        l.Fill = c.Piece.Couleur == couleur.BLANC ? Brushes.Gold : Brushes.Black;
                         l.Stroke = Brushes.Red;
                         l.StrokeThickness = 0;
-                        l.DataContext = r;
+                        l.DataContext = Damier.getCase(i, j);
                         GridDames.Children.Add(l);
                         Grid.SetRow(l, i);
                         Grid.SetColumn(l, j);
                         Panel.SetZIndex(l, 2);
-                        l.MouseLeftButtonDown += R_MouseLeftButtonDown1;
-                        l.MouseLeftButtonUp += L_MouseLeftButtonUp;
+                        l.MouseLeftButtonDown += R_MouseLeftButtonDownEllipse;
                     }
                 }
+            SelectCase = new Case(-1, -1, couleur.BLANC);
         }
 
-        private void L_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        public void Actualiser()
         {
-            (sender as Ellipse).StrokeThickness = 0;
+            GridDames.Children.Clear();
+            for (int i = 0; i < 10; i++)
+                for (int j = 0; j < 10; j++)
+                {
+                    Rectangle r = new Rectangle();
+                    r.Name = "Rectangle" + i.ToString() + j.ToString();
+                    r.Fill = (i % 2 == 0 && j % 2 == 0) || (i % 2 == 1 && j % 2 == 1) ? Brushes.White : Brushes.Gray;
+                    r.DataContext = Damier.getCase(i, j);
+                    GridDames.Children.Add(r);
+                    Grid.SetRow(r, i);
+                    Grid.SetColumn(r, j);
+                    Panel.SetZIndex(r, 1);
+                    r.MouseLeftButtonDown += R_MouseLeftButtonDownRectangle;
+
+                    Case c;
+                    c = Damier.getCase(i, j);
+                    if (c.Ocuppe)
+                    {
+                        Ellipse l = new Ellipse();
+                        l.Width = 30;
+                        l.Height = 30;
+                        l.VerticalAlignment = VerticalAlignment.Center;
+                        l.HorizontalAlignment = HorizontalAlignment.Center;
+                        l.Fill = c.Piece.Couleur == couleur.BLANC ? Brushes.Gold : Brushes.Black;
+                        l.Stroke = Brushes.Blue;
+                        if(c.Piece is Pion)
+                            l.StrokeThickness = 0;
+                        else
+                            l.StrokeThickness = 3;
+                        l.DataContext = Damier.getCase(i, j);
+                        GridDames.Children.Add(l);
+                        Grid.SetRow(l, i);
+                        Grid.SetColumn(l, j);
+                        Panel.SetZIndex(l, 2);
+                        l.MouseLeftButtonDown += R_MouseLeftButtonDownEllipse;
+                    }
+                }
+            SelectCase = new Case(-1, -1, couleur.BLANC);
+        }
+
+        public void ResetChoixPce()
+        {
+            SelectCase = new Case(-1, -1, couleur.BLANC);
+        }
+
+        private void R_MouseLeftButtonDownRectangle(object sender, MouseButtonEventArgs e)
+        {
+            ClickGrid((sender as Rectangle).DataContext as Case);
 
             //throw new NotImplementedException();
         }
 
-        private void R_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void R_MouseLeftButtonDownEllipse(object sender, MouseButtonEventArgs e)
         {
-            ClickGrid(sender as Rectangle);
+            //(sender as Ellipse).StrokeThickness = (sender as Ellipse).StrokeThickness > 0 ? 0 : 2;
+            ClickGrid((sender as Ellipse).DataContext as Case);
 
             //throw new NotImplementedException();
         }
 
-        private void R_MouseLeftButtonDown1(object sender, MouseButtonEventArgs e)
+        private void SelectPce()
         {
-            (sender as Ellipse).StrokeThickness = (sender as Ellipse).StrokeThickness > 0 ? 0 : 2;
-            ClickGrid((sender as Ellipse).DataContext as Rectangle);
 
-            //throw new NotImplementedException();
         }
 
-        private void ClickGrid(Rectangle r)
+        private void ClickGrid(Case c)
         {
-            Case c = r.DataContext as Case;
+            if (SelectCase.Ocuppe) // si pièce sur la case sélectionner avant on bouge
+            {
+                try
+                {
+                    Damier.BougerPiece(SelectCase, c);
+                    Actualiser();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    ResetChoixPce();
+                }
 
-            MessageBox.Show(c.Ligne.ToString() + " " + c.Colonne.ToString());
+            }
+            else // aturement on assigne SelectCase
+                SelectCase = c;
+
+            //MessageBox.Show(c.Ligne.ToString() + " " + c.Colonne.ToString());
         }
     }
 }
