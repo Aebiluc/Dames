@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dames"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="600" SizeChanged="Window_SizeChanged">
+        Title="MainWindow" Height="500" Width="650" SizeChanged="Window_SizeChanged">
     <DockPanel>
         <Grid x:Name="GridDames">
             <Grid.ColumnDefinitions>
@@ -13,7 +13,11 @@
                 <ColumnDefinition Width="500"/>
                 <!--<ColumnDefinition Width="*"/>-->
             </Grid.ColumnDefinitions>
-            <Button x:Name="ButtonInit" Content="Init Pièces" Height="30" VerticalAlignment="Top" Click="ButtonInit_Click"/>
+            <StackPanel Orientation="Vertical">
+                <Button x:Name="ButtonInit" Content="Init Pièces" Height="30" Click="ButtonInit_Click"/>
+                <Button x:Name="ButtonResetPiece" Content="nouveau choix pièce" Height="30" Click="ButtonResetPiece_Click"/>
+            </StackPanel>
+
             <local:UserControlDames x:Name="UserControlDamesVisuel" Grid.Column="1" DataContext="{Binding Path=Damier}"/>
         </Grid>
     </DockPanel>

@@ -41,5 +41,10 @@ namespace Dames
         {
             UserControlDamesVisuel.Init();
         }
+
+        private void ButtonResetPiece_Click(object sender, RoutedEventArgs e)
+        {
+            UserControlDamesVisuel.ResetChoixPce();
+        }
     }
 }
